@@ -1,93 +1,160 @@
-#include <stdio.h>
- 
-typedef struct 
-    {
-     int dia;
-     int mes;
-     int ano;
-    } Data;
-    
+// #################################################
+//  Instituto Federal da Bahia
+//  Salvador - BA
+//  Curso de Análise e Desenvolvimento de Sistemas http://ads.ifba.edu.br
+//  Disciplina: INF029 - Laboratório de Programação
+//  Professor: Renato Novais - renato@ifba.edu.br
 
-    
-int validarData(Data dataNascimento) {
-    // mês inválido 
-    if(dataNascimento.mes > 12 || dataNascimento.mes < 1) 
-        return 0;
-        
-    // considerando um intervalo entre 1920 - 2026
-    if(dataNascimento.ano < 1920 || dataNascimento.ano > 2026)
-        return 0;
-    
-    //descobrir se o ano é bissexto
-    
-        int bissexto = 0;
-        
-    if (dataNascimento.ano % 400 == 0) {
-        // bissexto
-        bissexto = 1;
-        
-        }
-    else if (dataNascimento.ano % 100 == 0) {
-            // NÃO bissexto
-            bissexto = 0;
-        }
-    else if (dataNascimento.ano % 4 == 0) {
-            // bissexto
-            bissexto = 1;
-        }
-    else {
-            // NÃO bissexto
-            bissexto = 0;
-        }        
-    
-    
-    
-    // validar o dia de acordo com o mês
-    
-    if(dataNascimento.mes == 2 && bissexto) {
-        if(dataNascimento.dia < 1 || dataNascimento.dia > 29)
-            return 0;
-    } else if(dataNascimento.mes == 2 && !bissexto) {
-        if(dataNascimento.dia < 1 || dataNascimento.dia > 28)
-            return 0;
-    }
-        
-    
-    // meses com 30 dias 
-    
-    if (dataNascimento.mes == 4 ||
-        dataNascimento.mes == 6 ||
-        dataNascimento.mes == 9 ||
-        dataNascimento.mes == 11) {
-            if(dataNascimento.dia < 1 || dataNascimento.dia > 30)
-                return 0;
-        }
-    else {
-        if(dataNascimento.dia < 1 || dataNascimento.dia > 31)
-                return 0;
-    }
-    
-     // como aceitar diferentes formatos de data?
-     
-    
-}
+//  ----- Dados do Aluno -----
+//  Nome: Marcia Marly de Souza Fonseca da Hora 
+//  email: marciahora02@gmail.com
+//  Matrícula: 20261160006
+//  Semestre: 2
+
+
+// #################################################
+
+#include <stdio.h>
+
+typedef struct {
+    int dia; 
+    int mes; 
+    int ano; 
+} Data;
+
+int validarData(Data d);
+
+int stringToInteger (char str[]);
+
 
 int main()
 {
-    printf("Informe a data:\n");
+    Data dataUsuario;
+    char strUsuario[11];
     
-    Data dataNascimento;
+    printf("Digite uma data:\n");
+    scanf("%10s", strUsuario);
     
-    scanf("%d %d %d", &dataNascimento.dia, &dataNascimento.mes, &dataNascimento.ano);
+   
     
-    validarData(dataNascimento);
+    int resultado =  stringToInteger(strUsuario); 
+    
+    printf("%d", resultado);
     
     
-    //printf("%d/%d/%d", dataNascimento.dia, dataNascimento.mes, dataNascimento.ano);
-
-
     return 0;
 }
 
 
+int stringToInteger (char strUsuario[]) {
+    
+    Data data = {0,0,0}; 
+    int digitos = 0;
+    int barras = 0;
+    
+    
+    for(int i = 0; strUsuario[i] != '\0'; i++){
+        
+        if(strUsuario[i] == '/') {
+            
+            if (digitos == 0 || barras >= 2)
+                return 0; 
+                
+            barras++;
+            digitos = 0;
+            
+        }
+        else if(strUsuario[i] >= '0' && strUsuario[i] <= '9'){
+            int numero = strUsuario[i] - '0';
+            digitos++;
+            
+            if (digitos > 2 && barras < 2)
+                return 0;
+
+            if (digitos > 4 && barras == 2)
+                return 0;
+            
+            if (barras == 0) {
+                data.dia = data.dia * 10 + numero;
+            }
+            
+            if(barras == 1){
+                data.mes = data.mes * 10 + numero;
+            }
+            
+            if(barras == 2){
+                data.ano = data.ano * 10 + numero;
+            }
+        }
+        
+        else {
+            return 0;
+        }
+    }
+    
+    if (barras != 2 || (digitos !=2 && digitos != 4))
+        return 0;
+    
+    return validarData(data);
+}
+
+
+
+int validarData(Data dataUsuario) {
+    
+    // validar mês
+    
+    if(dataUsuario.mes < 1 || dataUsuario.mes > 12) 
+        return 0;
+    
+   
+        
+    
+    // 1915 - 2000
+    
+    
+    // 2000 - 2026
+    if(dataUsuario.ano >= 0 && dataUsuario.ano < 27)
+        dataUsuario.ano += 2000;
+    else if(dataUsuario.ano > 26 && dataUsuario.ano <= 99)
+        dataUsuario.ano += 1900;
+    
+        
+    // validar ano 2026 - 1927
+    if(dataUsuario.ano < 1927 || dataUsuario.ano > 2026)
+        return 0;
+        
+    int bissexto = 0;
+    
+    if(dataUsuario.ano % 4 == 0 && dataUsuario.ano % 100 != 0 ) 
+        bissexto = 1;
+    if(dataUsuario.ano % 400 == 0)
+        bissexto = 1;
+    
+    //validar dia
+    
+    
+    //fevereiro 
+    if(dataUsuario.mes == 2 && bissexto){
+        if(dataUsuario.dia < 1 || dataUsuario.dia > 29)
+            return 0;
+    } else if(dataUsuario.mes == 2 && !bissexto) {
+        if(dataUsuario.dia < 1 || dataUsuario.dia > 28)
+            return 0;
+    } // Meses com 31 
+     else if (  dataUsuario.mes == 4 ||
+                dataUsuario.mes == 6 ||
+                dataUsuario.mes == 9 ||
+                dataUsuario.mes == 11  )
+     {   if(dataUsuario.dia < 1 || dataUsuario.dia > 30)
+            return 0;
+     } else {
+         if(dataUsuario.dia < 1 || dataUsuario.dia > 31)
+            return 0;
+     }
+    
+    
+    return 1; 
+}
+   
     
