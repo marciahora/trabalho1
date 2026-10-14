@@ -29,12 +29,10 @@ int stringToInteger (char str[]);
 
 int main()
 {
-    Data dataUsuario;
-    char strUsuario[11];
+    char strUsuario[100];
     
     printf("Digite uma data:\n");
-    scanf("%10s", strUsuario);
-    
+    scanf("%99s", strUsuario);   
    
     
     int resultado =  stringToInteger(strUsuario); 
@@ -94,6 +92,14 @@ int stringToInteger (char strUsuario[]) {
     
     if (barras != 2 || (digitos !=2 && digitos != 4))
         return 0;
+
+    // Converter somente anos digitados com 2 dígitos
+    if (digitos == 2) {
+        if (data.ano <= 26)
+            data.ano += 2000;
+        else
+            data.ano += 1900;
+    }
     
     return validarData(data);
 }
@@ -111,14 +117,7 @@ int validarData(Data dataUsuario) {
         
     
     // 1915 - 2000
-    
-    
-    // 2000 - 2026
-    if(dataUsuario.ano >= 0 && dataUsuario.ano < 27)
-        dataUsuario.ano += 2000;
-    else if(dataUsuario.ano > 26 && dataUsuario.ano <= 99)
-        dataUsuario.ano += 1900;
-    
+       
         
     // validar ano 2026 - 1927
     if(dataUsuario.ano < 1927 || dataUsuario.ano > 2026)
@@ -132,7 +131,6 @@ int validarData(Data dataUsuario) {
         bissexto = 1;
     
     //validar dia
-    
     
     //fevereiro 
     if(dataUsuario.mes == 2 && bissexto){
